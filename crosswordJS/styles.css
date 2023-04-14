@@ -2,7 +2,7 @@
 	display: grid;
 	grid-gap: 5px;
 	justify-content: center;
-	background: wheat;
+	background: #29467F;
 	padding: 50px;
 }
 
@@ -10,15 +10,15 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 50px;
-	height: 50px;
-	border: 1px solid black;
+	width: 60px;
+	height: 60px;
+	border: 1px solid #FFE573;
 	border-radius: 5px;
-	color: crimson;
-	font-size: 25px;
+	color: #FFE573;
+	font-size: 30px;
 	text-align: center;
 }
 
 .letterBox:hover {
-	border: 2px solid black;
+	border: 2px solid #FFE573;
 }
