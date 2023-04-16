@@ -37,30 +37,14 @@ function onClick(id) {
     const newSelectedLetterBox = letterBoxes.find(l => l.Id == id.replace(letterBoxIdPrefix, ''))
     const isLetterBoxChanged = selectedLetterBox ? selectedLetterBox != newSelectedLetterBox : true
     selectedLetterBox = newSelectedLetterBox
-    
-    if (selectedWord) {
-        console.log(selectedWord.Id);
-        console.log(selectedLetterBox.WordId[0]);
-        console.log(isLetterBoxChanged);
-        console.log(selectedLetterBox.WordId.length > 1);
-        if (!isLetterBoxChanged && selectedLetterBox.WordId.length > 1) {
-            if (selectedWord.Id == selectedLetterBox.WordId[0]) {
-                selectWord(selectedLetterBox.WordId[1])
-            } else {
-                selectWord(selectedLetterBox.WordId[0])
-            }
-        }
-        if (selectedWord.Id == selectedLetterBox.WordId[0] && !isLetterBoxChanged && selectedLetterBox.WordId.length > 1) {
-            selectWord(selectedLetterBox.WordId[1])
-        }
-    } else {
+
+    if (!selectedWord) {
+        selectWord(selectedLetterBox.WordId[0])
+    } else if (!isLetterBoxChanged && selectedLetterBox.WordId.length > 1 && selectedLetterBox.WordId.includes(selectedWord.Id)) {
+        selectWord(selectedLetterBox.WordId.find(w => w != selectedWord.Id))
+    } else if (!selectedLetterBox.WordId.includes(selectedWord.Id)) {
         selectWord(selectedLetterBox.WordId[0])
     }
-    // if (selectedWord && selectedWord.Id == selectedLetterBox.WordId[0] && selectedLetterBox.WordId.length > 1 && !isLetterBoxChanged) {
-    //     selectWord(selectedLetterBox.WordId[1])
-    // } else {
-    //     selectWord(selectedLetterBox.WordId[0])
-    // }
 }
 
 function selectWord(wordId) {
@@ -80,5 +64,5 @@ function selectWord(wordId) {
 }
 
 function keyPress(e) {
-    
+
 }
