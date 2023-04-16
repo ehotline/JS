@@ -3,28 +3,32 @@ body{
 }
 .crosswordContainer {
 	display: grid;
-	grid-gap: 5px;
+	grid-gap: 0.5rem;
 	justify-content: center;
-	padding: 50px;
+	padding: 2rem;
 }
 
 .letterBox {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	border: 1px solid #FFE573;
-	border-radius: 2px;
+	border: 0.1rem solid #FFE573;
+	border-radius: 0.2rem;
 	color: #FFE573;
 	background-color: #1144AA;
-	font-size: 30px;
+	font-size: 2rem;
 	text-align: center;
 	user-select: none;
 }
 
-.letterBoxSelected {
+.wordSelected {
 	background-color: #6B8FD5;
 }
 
+.letterBoxSelected {
+	border-color: #FF6F00;
+}
+
 .letterBox:hover {
-	box-shadow: 0 0 0 3px #A68800;
+	box-shadow: 0 0 0 0.2rem #A68800;
 }

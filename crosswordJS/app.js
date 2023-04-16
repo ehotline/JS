@@ -1,14 +1,14 @@
 const letterBoxIdPrefix = 'LetterBox'
 const columnsAmount = 6
 const size = '50px'
-var selectedLetterBox
+var selectedLetter
 var selectedWord
 /** @type {HTMLDivElement} */
 const container = document.querySelector('#crosswordContainer')
 container.style.gridTemplateColumns = `repeat(${columnsAmount}, ${size})`
-document.addEventListener('keypress', (e) => keyPress(e))
+document.addEventListener('keypress', (e) => onKeyPress(e))
 
-const { words, letterBoxes } = getGrid()
+const { words, letters } = getGrid()
 try {
     generateLayout()
 } catch (error) {
@@ -16,51 +16,72 @@ try {
 }
 
 function generateLayout() {
-    letterBoxes.some(letterBox => {
-        const div = document.createElement('div')
-        div.style.width = div.style.height = size
-        div.id = letterBoxIdPrefix + letterBox.Id
-        var text = ''
-        if (letterBox.LetterIndex.length > 0) {
-            div.className = 'letterBox'
-            div.addEventListener('click', (e) => onClick(e.target.id))
-            var wordId = letterBox.WordId[0]
-            var letterIndex = letterBox.LetterIndex[0]
-            text = words.find(w => w.Id == wordId).Text[letterIndex].toUpperCase()
+    letters.some(letter => {
+        const letterBox = document.createElement('div')
+        letterBox.style.width = letterBox.style.height = size
+        letterBox.id = letterBoxIdPrefix + letter.Id
+        if (letter.LetterIndex.length > 0) {
+            letterBox.className = 'letterBox'
+            letterBox.addEventListener('click', (e) => onLetterBoxClick(e.target.id))
         }
-        div.textContent = `${text}`
-        container.appendChild(div)
+        container.appendChild(letterBox)
     })
 }
 
-function onClick(id) {
-    const newSelectedLetterBox = letterBoxes.find(l => l.Id == id.replace(letterBoxIdPrefix, ''))
-    const isLetterBoxChanged = selectedLetterBox ? selectedLetterBox != newSelectedLetterBox : true
-    selectedLetterBox = newSelectedLetterBox
-
-    if (selectedWord && !isLetterBoxChanged && selectedLetterBox.WordId.length > 1 && selectedLetterBox.WordId.includes(selectedWord.Id)) {
-        selectWord(selectedLetterBox.WordId.find(w => w != selectedWord.Id))
-    } else if (!selectedWord || !selectedLetterBox.WordId.includes(selectedWord.Id)) {
-        selectWord(selectedLetterBox.WordId[0])
+function onLetterBoxClick(divId) {
+    const id = divId.replace(letterBoxIdPrefix, '')
+    const newSelectedLetter = letters.find(l => l.Id == id)
+    const isLetterBoxChanged = selectedLetter ? selectedLetter != newSelectedLetter : true
+    if(isLetterBoxChanged) {
+        selectedLetter = selectLetter(id)
+    }
+    if (selectedWord && !isLetterBoxChanged && selectedLetter.WordId.length > 1 && selectedLetter.WordId.includes(selectedWord.Id)) {
+        selectWord(selectedLetter.WordId.find(w => w != selectedWord.Id))
+    } else if (!selectedWord || !selectedLetter.WordId.includes(selectedWord.Id)) {
+        selectWord(selectedLetter.WordId[0])
     }
 }
 
-function selectWord(wordId) {
+function selectWord(id) {
     if (selectedWord) {
-        var letters = letterBoxes.filter(l => l.WordId.includes(selectedWord.Id))
-        letters.forEach(letter => {
+        var selectedLetters = letters.filter(l => l.WordId.includes(selectedWord.Id))
+        selectedLetters.forEach(letter => {
             var letterBox = container.querySelector(`#${letterBoxIdPrefix + letter.Id}`)
-            letterBox.classList.remove('letterBoxSelected')
+            letterBox.classList.remove('wordSelected')
         })
     }
-    selectedWord = words.find(w => w.Id == wordId)
-    var letters = letterBoxes.filter(l => l.WordId.includes(selectedWord.Id))
-    letters.forEach(letter => {
+    selectedWord = words.find(w => w.Id == id)
+    var selectedLetters = letters.filter(l => l.WordId.includes(selectedWord.Id))
+    selectedLetters.forEach(letter => {
         var letterBox = container.querySelector(`#${letterBoxIdPrefix + letter.Id}`)
-        letterBox.classList.add('letterBoxSelected')
+        letterBox.classList.add('wordSelected')
     })
 }
 
-function keyPress(e) {
+function selectLetter(id) {
+    if (selectedLetter) {
+        const oldLetterBox = container.querySelector(`#${letterBoxIdPrefix + selectedLetter.Id}`)
+        oldLetterBox.classList.remove('letterBoxSelected')
+    }
+    const letterBox = container.querySelector(`#${letterBoxIdPrefix + id}`)
+    letterBox.classList.add('letterBoxSelected')
+    return letters.find(l => l.Id == id)
+}
 
+function onKeyPress(e) {
+    if(selectedLetter && isLetter(e.key)) {
+        const letterBox = container.querySelector(`#${letterBoxIdPrefix + selectedLetter.Id}`)
+        letterBox.textContent = e.key.toUpperCase()
+        if (selectedWord.Text.length - 1 > selectedLetter.LetterIndex) {
+            const nextLetter = letters.find(l => l.LetterIndex == selectedLetter.LetterIndex + 1 && l.WordId.includes(selectedWord.Id))
+            console.log(selectedLetter.LetterIndex);
+            console.log(selectedWord);
+            console.log(nextLetter);
+            //selectLetter(nextLetter)
+        }
+    }
+}
+
+function isLetter(letter) {
+    return /[а-я]/i.test(letter)
 }

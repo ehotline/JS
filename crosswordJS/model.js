@@ -1,7 +1,7 @@
 function getGrid() {
     return {
         words: getWords(),
-        letterBoxes: getLetterBoxes()
+        letters: getLetters()
     }
 }
 
@@ -29,9 +29,9 @@ function getWords() {
         }]
 }
 
-function getLetterBoxes() {
+function getLetters() {
     var counter = 1;
-    var letterBoxes = [];
+    var letters = [];
     for (i = 1; i <= 9; i++) {
         for (j = 1; j <= 6; j++, counter++) {
             var id = counter
@@ -152,15 +152,15 @@ function getLetterBoxes() {
                     break
             }
 
-            var letterBox = {
+            var letter = {
                 Id: id,
                 WordId: wordId,
                 LetterIndex: letterIndex,
                 Row: row,
                 Column: column
             }
-            letterBoxes.push(letterBox)
+            letters.push(letter)
         }
     }
-    return letterBoxes
+    return letters
 }
