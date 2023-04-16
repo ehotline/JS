@@ -15,9 +15,14 @@ body{
 	border: 1px solid #FFE573;
 	border-radius: 2px;
 	color: #FFE573;
+	background-color: #1144AA;
 	font-size: 30px;
 	text-align: center;
 	user-select: none;
+}
+
+.letterBoxSelected {
+	background-color: #6B8FD5;
 }
 
 .letterBox:hover {
