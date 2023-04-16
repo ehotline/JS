@@ -38,11 +38,9 @@ function onClick(id) {
     const isLetterBoxChanged = selectedLetterBox ? selectedLetterBox != newSelectedLetterBox : true
     selectedLetterBox = newSelectedLetterBox
 
-    if (!selectedWord) {
-        selectWord(selectedLetterBox.WordId[0])
-    } else if (!isLetterBoxChanged && selectedLetterBox.WordId.length > 1 && selectedLetterBox.WordId.includes(selectedWord.Id)) {
+    if (selectedWord && !isLetterBoxChanged && selectedLetterBox.WordId.length > 1 && selectedLetterBox.WordId.includes(selectedWord.Id)) {
         selectWord(selectedLetterBox.WordId.find(w => w != selectedWord.Id))
-    } else if (!selectedLetterBox.WordId.includes(selectedWord.Id)) {
+    } else if (!selectedWord || !selectedLetterBox.WordId.includes(selectedWord.Id)) {
         selectWord(selectedLetterBox.WordId[0])
     }
 }
