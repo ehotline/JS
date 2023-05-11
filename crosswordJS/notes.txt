@@ -1,0 +1,16 @@
+-- Модели --
+Word:
+Id
+Text - слово
+Direction - V/H (вертикальное/горизонтальное)
+Description - описание слова
+
+Letter:
+Id
+VerticalWordId - Id вертикального слова, к которому принадлежит буква
+VerticalIndex - номер буквы по счёту в вертикальном слове
+HorizontalWordId
+HorizontalIndex
+Row - ряд буквы
+Column - колонка буквы
+

@@ -1,7 +1,9 @@
 const letterBoxIdPrefix = 'LetterBox'
 const columnsAmount = 6
 const size = '50px'
+/** @type {Letter} */
 var selectedLetter
+/** @type {Word} */
 var selectedWord
 /** @type {HTMLDivElement} */
 const container = document.querySelector('#crosswordContainer')
@@ -11,8 +13,10 @@ document.addEventListener('keypress', (e) => onKeyPress(e))
 const { words, letters } = getGrid()
 try {
     generateLayout()
+    //console.log(words)
+    //console.log(letters)
 } catch (error) {
-    console.log(error);
+    console.log(error)
 }
 
 function generateLayout() {
@@ -20,7 +24,7 @@ function generateLayout() {
         const letterBox = document.createElement('div')
         letterBox.style.width = letterBox.style.height = size
         letterBox.id = letterBoxIdPrefix + letter.Id
-        if (letter.LetterIndex.length > 0) {
+        if (!letter.isEmpty()) {
             letterBox.className = 'letterBox'
             letterBox.addEventListener('click', (e) => onLetterBoxClick(e.target.id))
         }
@@ -32,26 +36,34 @@ function onLetterBoxClick(divId) {
     const id = divId.replace(letterBoxIdPrefix, '')
     const newSelectedLetter = letters.find(l => l.Id == id)
     const isLetterBoxChanged = selectedLetter ? selectedLetter != newSelectedLetter : true
-    if(isLetterBoxChanged) {
+    if (isLetterBoxChanged) {
         selectedLetter = selectLetter(id)
     }
-    if (selectedWord && !isLetterBoxChanged && selectedLetter.WordId.length > 1 && selectedLetter.WordId.includes(selectedWord.Id)) {
-        selectWord(selectedLetter.WordId.find(w => w != selectedWord.Id))
-    } else if (!selectedWord || !selectedLetter.WordId.includes(selectedWord.Id)) {
-        selectWord(selectedLetter.WordId[0])
+    if (selectedWord && !isLetterBoxChanged && selectedLetter.isDoubleWord() && selectedLetter.isPartOfWord(selectedWord.Id)) {
+        if (selectedWord.Id == selectedLetter.VerticalWordId) {
+            selectWord(selectedLetter.HorizontalWordId)
+        } else {
+            selectWord(selectedLetter.VerticalWordId)
+        }
+    } else if (!selectedWord || !selectedLetter.isPartOfWord(selectedWord.Id)) {
+        if (selectedLetter.isVertical()) {
+            selectWord(selectedLetter.VerticalWordId)
+        } else {
+            selectWord(selectedLetter.HorizontalWordId)
+        }
     }
 }
 
 function selectWord(id) {
     if (selectedWord) {
-        var selectedLetters = letters.filter(l => l.WordId.includes(selectedWord.Id))
+        var selectedLetters = letters.filter(l => l.isPartOfWord(selectedWord.Id))
         selectedLetters.forEach(letter => {
             var letterBox = container.querySelector(`#${letterBoxIdPrefix + letter.Id}`)
             letterBox.classList.remove('wordSelected')
         })
     }
     selectedWord = words.find(w => w.Id == id)
-    var selectedLetters = letters.filter(l => l.WordId.includes(selectedWord.Id))
+    var selectedLetters = letters.filter(l => l.isPartOfWord(selectedWord.Id))
     selectedLetters.forEach(letter => {
         var letterBox = container.querySelector(`#${letterBoxIdPrefix + letter.Id}`)
         letterBox.classList.add('wordSelected')
@@ -69,12 +81,13 @@ function selectLetter(id) {
 }
 
 function onKeyPress(e) {
-    if(selectedLetter && isLetter(e.key)) {
+    if (selectedLetter && isLetter(e.key)) {
         const letterBox = container.querySelector(`#${letterBoxIdPrefix + selectedLetter.Id}`)
         letterBox.textContent = e.key.toUpperCase()
-        if (selectedWord.Text.length - 1 > selectedLetter.LetterIndex) {
-            const nextLetter = letters.find(l => l.LetterIndex == selectedLetter.LetterIndex + 1 && l.WordId.includes(selectedWord.Id))
-            console.log(selectedLetter.LetterIndex);
+        const letterIndex = selectedLetter.isVertical ? selectedLetter.VerticalIndex : selectedLetter.HorizontalIndex
+        if (selectedWord.Text.length - 1 > letterIndex) {
+            const nextLetter = letters.find(l => l.LetterIndex == letterIndex + 1 && l.WordId.includes(selectedWord.Id))
+            console.log(letterIndex);
             console.log(selectedWord);
             console.log(nextLetter);
             //selectLetter(nextLetter)
