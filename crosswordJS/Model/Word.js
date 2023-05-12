@@ -1,9 +1,10 @@
 class Word {
     constructor(id, text, direction, description) {
-        this.Id = id;
-        this.Text = text;
-        this.Direction = direction;
-        this.Description = description;
+        this.Id = id
+        this.Text = text
+        this.Direction = direction
+        this.Description = description
+        this.Solved = false
     }
 
     isVertical() {

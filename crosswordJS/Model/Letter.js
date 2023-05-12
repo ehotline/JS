@@ -7,6 +7,7 @@ class Letter {
         this.HorizontalIndex = horizontalIndex
         this.Row = row
         this.Column = column
+        this.Solved = false
     }
 
     isEmpty() {
@@ -48,4 +49,30 @@ class Letter {
             return false
         }
     }
+}
+
+function getNextLetter(word, letter) {
+    var nextLetter
+    const nextLetterIndex = word.isVertical() ? letter.VerticalIndex + 1 : letter.HorizontalIndex + 1
+    if (nextLetterIndex > word.Text.length - 1) {
+        return letter
+    } else if (word.isVertical()) {
+        nextLetter = letters.find(l => l.VerticalIndex == nextLetterIndex && l.isPartOfWord(word.Id))
+    } else {
+        nextLetter = letters.find(l => l.HorizontalIndex == nextLetterIndex && l.isPartOfWord(word.Id))
+    }
+    return nextLetter
+}
+
+function getPreviousLetter(word, letter) {
+    var previousLetter
+    const nextLetterIndex = word.isVertical() ? letter.VerticalIndex - 1 : letter.HorizontalIndex - 1
+    if (nextLetterIndex < 0) {
+        return letter
+    } else if (word.isVertical()) {
+        previousLetter = letters.find(l => l.VerticalIndex == nextLetterIndex && l.isPartOfWord(word.Id))
+    } else {
+        previousLetter = letters.find(l => l.HorizontalIndex == nextLetterIndex && l.isPartOfWord(word.Id))
+    }
+    return previousLetter
 }
